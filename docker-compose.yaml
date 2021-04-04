@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  mooc_backend_python:
+    image: mooc_backend_python
+    container_name: codelytv-python_ddd_skeleton-mooc_backend-python
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    ports:
+      - '5000:5000'
+    command: "python3 apps/mooc/backend/app.py"
+
+#  tests:
+#    image: bulbapitets
+#    container_name: bulbapitests
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    volumes:
+#      - .:/app
+#    command: "pytest -s tests"
