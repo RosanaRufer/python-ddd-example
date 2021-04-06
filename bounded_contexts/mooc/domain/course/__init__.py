@@ -17,14 +17,3 @@ class Course:
         self.name = name
         self.duration = duration
 
-
-class CourseDoesntExistException(Exception):
-    pass
-
-
-class CourseRepository:
-    def save(self, course: Course):
-        pass
-
-    def search(self, _id: CourseId) -> Optional[Course]:
-        pass

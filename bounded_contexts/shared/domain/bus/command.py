@@ -5,3 +5,7 @@ class Command:
 class CommandBus:
     def dispatch(self, command: Command):
         pass
+
+
+class CommandHandler:
+    pass
