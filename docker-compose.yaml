@@ -11,7 +11,7 @@ services:
       - .:/app
     ports:
       - '5000:5000'
-    command: "python3 apps/mooc/backend/app.py"
+    command: "python3 infrastructure/flask/mooc/backend/app.py"
 
 #  tests:
 #    image: bulbapitets

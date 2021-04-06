@@ -1,141 +1,16 @@
+### What's this?
+A DDD scaffolding in Python using [hexagonal architecture](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749) (Infrastructure, Application, Domain)
 
-<p align="center">
-  <a href="http://codely.tv">
-    <img src="http://codely.tv/wp-content/uploads/2016/05/cropped-logo-codelyTV.png" width="192px" height="192px"/>
-  </a>
-</p>
+![img](docs/hex-architecture.png)
 
-<h1 align="center">
-  🐍🎯 Hexagonal Architecture, DDD & CQRS in Python
-</h1>
 
-<p align="center">
-    <a href="https://github.com/CodelyTV"><img src="https://img.shields.io/badge/CodelyTV-OS-green.svg?style=flat-square" alt="codely.tv"/></a>
-    <a href="http://pro.codely.tv"><img src="https://img.shields.io/badge/CodelyTV-PRO-black.svg?style=flat-square" alt="CodelyTV Courses"/></a>
-    <a href="#"><img src="https://img.shields.io/badge/Symfony-5.0-purple.svg?style=flat-square&logo=symfony" alt="Symfony 5.0"/></a>
-    <a href="https://github.com/CodelyTV/php-ddd-example/actions"><img src="https://github.com/CodelyTV/php-ddd-example/workflows/CI/badge.svg" alt="CI pipeline status" /></a>
-</p>
 
-<p align="center">
-  Example of a <strong>Python application using Domain-Driven Design (DDD) and Command Query Responsibility Segregation
-  (CQRS) principles</strong> keeping the code as simple as possible.
-  <br />
-  <br />
-  Take a look, play and have fun with this.
-  <a href="https://github.com/CodelyTV/php-ddd-example/stargazers">Stars are welcome 😊</a>
-  <br />
-  <br />
-  <a href="https://www.youtube.com/watch?v=1kaP39W80zQ">View Demo</a>
-  ·
-  <a href="https://github.com/CodelyTV/php-ddd-example/issues">Report a bug</a>
-  ·
-  <a href="https://github.com/CodelyTV/php-ddd-example/issues">Request a feature</a>
-</p>
+### Requirements to run the code
+* Docker
 
-## 🚀 Environment Setup
+### How to run the code
+- `make build`
+- `make up`
 
-### 🐳 Needed tools
-
-1. [Install Docker](https://www.docker.com/get-started)
-2. Clone this project: `git clone https://github.com/CodelyTV/python-ddd-example python-ddd-example`
-3. Move to the project folder: `cd python-ddd-example`
-
-### 🛠️ Environment configuration
-
-1. Create a local environment file (`cp .env .env.local`) if you want to modify any parameter
-
-### 🔥 Application execution
-
-1. Install all the dependencies and bring up the project with Docker executing: `make build`
-2. Then you'll have 3 apps available (2 APIs and 1 Frontend):
-   1. [Mooc Backend](apps/mooc/backend): http://localhost:8030/health-check
-   2. [Backoffice Backend](apps/backoffice/backend): http://localhost:8040/health-check
-   3. [Backoffice Frontend](apps/backoffice/frontend): http://localhost:8041/health-check
-
-### ✅ Tests execution
-
-1. Install the dependencies if you haven't done it previously: `make deps`
-2. Execute Pytest and Cucumber tests: `make test`
-
-## 👩‍💻 Project explanation
-
-This project tries to be a MOOC (Massive Open Online Course) platform. It's decoupled from any framework, but it has
-some Flask implementation.
-
-### ⛱️ Bounded Contexts
-
-* [Mooc](src/Mooc): Place to look in if you wanna see some code 🙂. Massive Open Online Courses public platform with users, videos, notifications, and so on.
-* [Backoffice](src/Backoffice): Here you'll find the use cases needed by the Customer Support department in order to manage users, courses, videos, and so on.
-
-### 🎯 Hexagonal Architecture
-
-This repository follows the Hexagonal Architecture pattern. Also, it's structured using `modules`.
-With this, we can see that the current structure of a Bounded Context is:
-
-```scala
-$ tree -L 4 src
-
-src
-|-- Mooc // Company subdomain / Bounded Context: Features related to one of the company business lines / products
-|   `-- Videos // Some Module inside the Mooc context
-|       |-- Application
-|       |   |-- Create // Inside the application layer all is structured by actions
-|       |   |   |-- CreateVideoCommand.py
-|       |   |   |-- CreateVideoCommandHandler.py
-|       |   |   `-- VideoCreator.py
-|       |   |-- Find
-|       |   |-- Trim
-|       |   `-- Update
-|       |-- Domain
-|       |   |-- Video.py // The Aggregate of the Module
-|       |   |-- VideoCreatedDomainEvent.py // A Domain Event
-|       |   |-- VideoFinder.py
-|       |   |-- VideoId.py
-|       |   |-- VideoNotFound.py
-|       |   |-- VideoRepository.py // The `Interface` of the repository is inside Domain
-|       |   |-- VideoTitle.py
-|       |   |-- VideoType.py
-|       |   |-- VideoUrl.py
-|       |   `-- Videos.py // A collection of our Aggregate
-|       `-- Infrastructure // The infrastructure of our module
-|           |-- DependencyInjection
-|           `-- Persistence
-|               `--MySqlVideoRepository.py // An implementation of the repository
-`-- Shared // Shared Kernel: Common infrastructure and domain shared between the different Bounded Contexts
-    |-- Domain
-    `-- Infrastructure
-```
-
-#### Repository pattern
-Our repositories try to be as simple as possible usually only containing 2 methods `search` and `save`.
-If we need some query with more filters we use the `Specification` pattern also known as `Criteria` pattern. So we add a
-`searchByCriteria` method.
-
-You can see an example [here](src/Mooc/Courses/Domain/CourseRepository.py)
-and its implementation [here](src/Mooc/Courses/Infrastructure/Persistence/DoctrineCourseRepository.py).
-
-### Aggregates
-You can see an example of an aggregate [here](src/Mooc/Courses/Domain/Course.py). All aggregates should
-extend the [AggregateRoot](src/Shared/Domain/Aggregate/AggregateRoot.py).
-
-### Command Bus
-There is 1 implementations of the [command bus](src/Shared/Domain/Bus/Command/CommandBus.py).
-1. [Sync](src/Shared/Infrastructure/Bus/Command/InMemorySymfonyCommandBus.py) using the Symfony Message Bus
-
-### Query Bus
-The [Query Bus](src/Shared/Infrastructure/Bus/Query/InMemorySymfonyQueryBus.py) uses the Symfony Message Bus.
-
-### Event Bus
-The [Event Bus](src/Shared/Infrastructure/Bus/Event/InMemory/InMemorySymfonyEventBus.py) uses the Symfony Message Bus.
-The [MySql Bus](src/Shared/Infrastructure/Bus/Event/MySql/MySqlDoctrineEventBus.py) uses a MySql+Pulling as a bus.
-The [RabbitMQ Bus](src/Shared/Infrastructure/Bus/Event/RabbitMq/RabbitMqEventBus.py) uses RabbitMQ C extension.
-
-## 📱 Monitoring
-Every time a domain event is published it's exported to Prometheus. You can access to the Prometheus panel [here](http://localhost:9999/).
-
-## 🤔 Contributing
-There are some things missing (add swagger, improve documentation...), feel free to add this if you want! If you want
-some guidelines feel free to contact us :)
-
-## 🤩 Extra
-This code was shown in the [From framework coupled code to #microservices through #DDD](http://codely.tv/screencasts/codigo-acoplado-framework-microservicios-ddd) talk and doubts where answered in the [DDD y CQRS: Preguntas Frecuentes](http://codely.tv/screencasts/ddd-cqrs-preguntas-frecuentes/) video.
+### Business context
+The business context is brought from CodelyTV videos on DDD, where they are modelling their video platform. 
