@@ -11,7 +11,7 @@ services:
       - .:/app
     ports:
       - '5000:5000'
-    command: "python3 bounded_context/mooc/infrastructure/flask/backend/app.py"
+    command: "python3 bounded_contexts/mooc/infrastructure/flask/backend/app.py"
 
 #  tests:
 #    image: bulbapitets

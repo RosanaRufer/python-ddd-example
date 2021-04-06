@@ -1,6 +1,6 @@
 from typing import Optional
 
-from bounded_context.shared.domain.value_object import CourseId, StringValueObject
+from bounded_contexts.shared.domain.value_object import CourseId, StringValueObject
 
 
 class CourseDuration(StringValueObject):
